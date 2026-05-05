@@ -94,7 +94,7 @@
       </div>
     </div>
 
-    <button type="submit">Submit Your Domain</button>
+    <button type="submit" class="button button--primary">Submit Your Domain</button>
 
     <div class="response-msg" id="responseMsg"></div>
 
@@ -285,9 +285,9 @@
   :root{
     --bg:#0b2c4a;
     --card:#062D53;
-    --input:#03213F;
+    --input:#0c0b1f;
     --border:#1B4A77;
-    --accent:#FF2EAE;
+    --accent:white;
     --text:#ffffff;
     --place:#ADC3D9;
     --btnText:#022344;
@@ -299,10 +299,9 @@
   .domainSale__form .container{
     width:100%;
     /* max-width:750px; */
-    background:var(--card);
-    border:2px solid #1e6aa8;
+    background:#01031f;
     border-radius:15px;
-    padding:40px;
+    padding:36px;
     margin: 0 auto;
   }
 
@@ -311,20 +310,18 @@
     letter-spacing:2px;
     color:var(--accent);
     margin-bottom:15px;
-    margin-top:30px;
-    font-family: 'Poppins-Bold';
   }
   .domainSale__form .contactSaleForm{
     margin-top: 60px !important;
   }
   .formHead .textCenter{
-    font-family: 'Poppins-Regular';
+    
     font-size: 14px !important;
     color: white;
   }
   .formHead h2{
     font-size: 40px !important; 
-    font-family: 'Poppins-SemiBold';
+   
   }
 
   .domainSale__form hr{
@@ -346,18 +343,20 @@
   }
 
   .domainSale__form input, .domainSale__form textarea{
-    width:100%;
-    padding:12px 15px;
-    border-radius:25px;
-    border:1px solid var(--border);
-    background:var(--input);
-    color:#fff;
-    outline:none;
-    transition:0.3s;
+    width: 100%;
+    background: #0c0b1f;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border: 2px solid transparent;
+    border-radius: 100px;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: white;
+    padding: 15px 22px;
   }
 
   .domainSale__form textarea{
-    border-radius:12px;
     resize:none;
     height:110px;
   }
@@ -396,16 +395,7 @@
 
   .domainSale__form button{
     width:100%;
-    padding:14px;
-    border:none;
-    border-radius:30px;
-    background:var(--accent);
-    color:var(--btnText);
-    font-weight:bold;
-    font-size:15px;
-    cursor:pointer;
-    transition:0.3s;
-    margin-top:15px;
+
   }
 
   .domainSale__form button:hover{
