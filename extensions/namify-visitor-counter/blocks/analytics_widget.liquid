@@ -27,7 +27,7 @@
         if (data.views !== undefined) {
           const label = data.views === 1 ? 'time' : 'times';
           document.querySelectorAll('.namify-view-count').forEach(el => {
-            el.innerText = `${data.views}`;
+            el.innerText = `${data.views}+ potential buyers viewed or shortlisted this domain recently.`;
           });
         }
       } catch (error) {
