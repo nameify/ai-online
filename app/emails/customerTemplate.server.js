@@ -19,7 +19,7 @@ export function customerTemplate(data) {
             <!-- Header -->
             <tr>
               <td style="background:linear-gradient(135deg,#4f46e5,#9333ea); padding:30px; text-align:center;">
-                <img src="https://nameify.com/cdn/shop/files/New_Namify_Logo.png?v=1770660725" width="160" style="display:block; margin:auto;" />
+                <img src="https://ai.online/cdn/shop/files/ai-online-white-H.svg?v=1776885625&width=160" width="160" style="display:block; margin:auto;" />
                 <h1 style="color:#ffffff; margin:15px 0 0; font-size:26px; font-weight:600;">
                   Submission Received 🎉
                 </h1>
@@ -32,7 +32,7 @@ export function customerTemplate(data) {
                 <p style="font-size:16px;">Hi <strong>${data.fullName}</strong>,</p>
 
                 <p style="font-size:15px; line-height:1.6;">
-                  Thank you for submitting your domain to Namify Marketplace.
+                  Thank you for submitting your domain to ai.online - Domain Marketplace.
                   Our team will carefully review your listing and contact you shortly.
                 </p>
 
@@ -49,11 +49,11 @@ export function customerTemplate(data) {
                 </table>
 
                 <p style="margin-top:25px; font-size:15px;">
-                  We appreciate your trust in Namify 💜
+                  We appreciate your trust in ai.online 💜
                 </p>
 
                 <p style="margin-top:30px; font-size:14px; color:#666;">
-                  — Namify Team
+                  — ai.online Team
                 </p>
               </td>
             </tr>
@@ -61,7 +61,7 @@ export function customerTemplate(data) {
             <!-- Footer -->
             <tr>
               <td style="background:#fafafa; padding:20px; text-align:center; font-size:12px; color:#888;">
-                © ${new Date().getFullYear()} Namify. All rights reserved.
+                © ${new Date().getFullYear()} ai.online. All rights reserved.
               </td>
             </tr>
 

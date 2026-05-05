@@ -17,7 +17,7 @@ export function adminTemplate(data, shop) {
             <!-- Header -->
             <tr>
               <td style="background:#111827; padding:25px; text-align:center;">
-                <img src="https://nameify.com/cdn/shop/files/New_Namify_Logo.png?v=1770660725" width="150" />
+                <img src="https://ai.online/cdn/shop/files/ai-online-white-H.svg?v=1776885625&width=160" width="150" />
                 <h2 style="color:#fff; margin:15px 0 0;">New Domain Submission</h2>
               </td>
             </tr>
@@ -66,7 +66,7 @@ export function adminTemplate(data, shop) {
             <!-- Footer -->
             <tr>
               <td style="background:#fafafa; padding:18px; text-align:center; font-size:12px; color:#777;">
-                Automatic notification from Namify Domain Marketplace
+                Automatic notification from ai.online - Domain Marketplace.
               </td>
             </tr>
 
