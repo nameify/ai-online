@@ -20,7 +20,7 @@
           localStorage.setItem('namify_visitor_id', visitorID);
         }
 
-        const apiUrl = `https://dude-conventions-taxation-edinburgh.trycloudflare.com/api/namify-visitor-count?productId=${productId}&productTitle=${encodeURIComponent(productTitle)}&shop=${shopDomain}&visitorId=${visitorID}`;
+        const apiUrl = `https://ai-online-rho.vercel.app/api/namify-visitor-count?productId=${productId}&productTitle=${encodeURIComponent(productTitle)}&shop=${shopDomain}&visitorId=${visitorID}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
 
