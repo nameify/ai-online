@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
+// enough when changing adapters.
+// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
+
+datasource db {
+  provider = "mongodb"
+  url = env("DATABASE_URL")
+}
+
+model Session {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+}
+
+// 1. The Aggregate Counter (Stats for the dashboard)
+model ProductAnalytics {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop         String
+  productId    String
+  productTitle String?
+  viewCount    Int      @default(0)
+  lastUpdated  DateTime @updatedAt
+
+  @@unique([shop, productId])
+}
+
+// 2. The Visit Log (To prevent spam/duplicates)
+model ProductVisit {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop        String
+  productId   String
+  productTitle String?
+  visitorId   String   // Can be customerId OR a generated UUID
+  visitedAt   DateTime @default(now())
+
+  // Create a compound index for fast lookups
+  @@index([shop, productId, visitorId])
+}
+
+
+// 3. Domain Sale Form
+model DomainSale {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  shop        String
+  domain      String
+  listingType String
+  price       String
+  minOffer    String
+  registrar   String
+  expiry      DateTime
+  traffic     String
+  comments    String
+  fullName    String
+  email       String
+  phone       String
+  visitedAt   DateTime @default(now())
+  createdAt DateTime? @default(now())
+}

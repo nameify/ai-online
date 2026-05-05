@@ -1,0 +1,74 @@
+{% comment %} extensions\namify-visitor-counter\blocks\analytics_widget.liquid {% endcomment %}
+
+<div class="namify-analytics-container" data-product-id="{{ product.id }}">
+  <span class="namify-text">This domain has been viewed: </span>
+  <span class="namify-view-count">Loading views...</span>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const productTitle = '{{ product.title | escape }}'.trim();
+    const productId = '{{ product.id }}';
+    const productDate = '{{ product.created_at | date: "%B %d %Y" }}';
+    const shopDomain = '{{ shop.permanent_domain }}';
+
+    async function fetchAnalytics() {
+      try {
+        let visitorID = '{{ customer.id }}' || localStorage.getItem('namify_visitor_id');
+        if (!visitorID) {
+          visitorID = 'guest_' + Math.random().toString(36).substr(2, 9) + Date.now();
+          localStorage.setItem('namify_visitor_id', visitorID);
+        }
+
+        const apiUrl = `https://dude-conventions-taxation-edinburgh.trycloudflare.com/api/namify-visitor-count?productId=${productId}&productTitle=${encodeURIComponent(productTitle)}&shop=${shopDomain}&visitorId=${visitorID}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        if (data.views !== undefined) {
+          const label = data.views === 1 ? 'time' : 'times';
+          document.querySelectorAll('.namify-view-count').forEach(el => {
+            el.innerText = `${data.views} ${label} Since ${productDate}`;
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      }
+    }
+
+  
+    fetchAnalytics();
+   
+  });
+</script>
+
+
+
+<style>
+  .namify-analytics-container .namify-text {
+    color: white;
+    letter-spacing: 0;
+    line-height: 150%;
+    margin: 0;
+    font-family: 'Poppins-Regular';
+    font-size: 18px !important;
+  }
+
+  .namify-view-count {
+    font-size: 18px !important;
+    color: #ff2daf;
+    font-weight: 400 !important;
+    font-family: 'Poppins-Regular';
+  }
+
+
+  
+</style>
+
+{% schema %}
+{
+"name": "Visitor Counter",
+"target": "section",
+"templates": ["product"],
+"settings": []
+}
+{% endschema %}

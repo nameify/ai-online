@@ -1,0 +1,533 @@
+
+
+
+<div class="container-nfs">
+  <div class="glass-card" id="mainCard">
+    <div class="header-section">
+
+      <div class="status-container">
+        <span class="status-badge" id="avail-status">Checking...</span>
+        <span class="id-label">WHOIS DATA</span>
+      </div>
+      <h1 class="domain-hero" id="domain-title">loading...</h1>
+
+      
+    </div>
+
+    <div class="content-section">
+      <div class="info-grid">
+        <div>
+          <p class="data-label">Registration Date</p>
+          <p class="data-value" id="reg-date">--</p>
+        </div>
+
+        <div>
+          <p class="data-label">Last Updated</p>
+          <p class="data-value" id="update-date">--</p>
+        </div>
+
+        <div style="grid-column: span 2;">
+          <p class="data-label">Estimated Age</p>
+          <div class="age-container">
+            <p class="data-value age-value" id="age-days">--</p>
+            <span class="age-pill" id="age-years">--</span>
+          </div>
+        </div>
+
+
+        <div>
+          <p class="data-label">Whois Server</p>
+          <p class="data-value" id="whois-server">--</p>
+        </div>
+      </div>
+
+      <div class="ns-box productProtection">
+        <p class="data-label" style="padding-top: 3px; margin:0;">Active Name Servers</p>
+        <div class="ns-list" id="ns-container">
+          <span class="ns-tag italic">Fetching...</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="valuation-footer">
+      {% comment %} <div class="pricing-preview">
+        <p class="potential-value" id="market-badge">GoDaddy</p>
+        <p class="estimate-value" id="price-godaddy">$0.00</p>
+      </div> {% endcomment %}
+      
+      <div class="pricing-preview" style="display: block;">
+        <p class="potential-value" id="market-badge">Estibot</p>
+         <div class="humble-container">
+          <div class="humble-row">
+            <p class="estimate-humble" >Estimated Value</p>
+
+            <p class="estimate-humble text-pink" id="price-est-estimate">$0.00</p>
+
+          </div>
+          <div class="humble-row">
+            <p class="estimate-humble">Wholesale Value</p>
+
+            <p class="estimate-humble text-pink" id="price-est-wholesale">$0.00</p>
+
+          </div>
+          <div></div>
+          
+
+        </div>
+      </div>
+
+      <div class="pricing-preview" style="display: block;">
+        <p class="potential-value" id="market-badge">Humbleworth</p>
+        {% comment %} <p class="estimate-value" id="price-humbleworth">$0.00</p> {% endcomment %}
+        <div class="humble-container">
+          <div class="humble-row">
+            <p class="estimate-humble" >Auction</p>
+
+            <p class="estimate-humble text-pink" id="price-a">$0.00</p>
+
+          </div>
+          <div class="humble-row">
+            <p class="estimate-humble">Brokerage</p>
+
+            <p class="estimate-humble text-pink" id="price-b">$0.00</p>
+
+          </div>
+          <div class="humble-row">
+            <p class="estimate-humble">Marketplace</p>
+            <p class="estimate-humble text-pink" id="price-c">$0.00</p>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const productTitle = '{{ product.title | escape }}'.trim();
+    // const productId = '40439043';
+    const productId = '{{ product.id }}';
+    const productDate = '{{ product.created_at | date: "%B %d %Y" }}';
+    const shopDomain = '{{ shop.permanent_domain }}';
+
+    function extractDomain(text) {
+      if (!text) return null;
+
+      const match = text
+        .toLowerCase()
+        .match(/([a-z0-9-]+\.)+[a-z]{2,}/);
+
+      return match ? match[0] : null;
+    }
+
+
+    async function getDomainMetaInforamtion() {
+      try {
+        let API_URL = 'https://dude-conventions-taxation-edinburgh.trycloudflare.com';
+        // let API_URL = 'https://path-rolled-applicants-discusses.trycloudflare.com';
+        
+        // Use product title as domain if it looks like one, otherwise fallback
+       let domain = extractDomain(productTitle);
+      //  let domain = "successdocs.info";
+
+        let response = await fetch(`${API_URL}/api/getDomainMeta?domain=${domain}&productId=${productId}`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response?.status}`);
+
+        let res = await response.json();
+        let data = res?.data || res || {};
+      
+        // UI Elements with Safety Checks
+        let updateText = (id, text) => {
+          let el = document.getElementById(id);
+          if (el) el.textContent = text;
+        };
+
+        let humbleData = data?.humbleworthResponse?.valuations?.length ? data.humbleworthResponse.valuations[0] : null; 
+
+      
+        updateText('domain-title', domain);
+        updateText('avail-status', data?.godaddyResponse?.available ? "Available" : "Registered");
+
+        // updateText('price-godaddy', data?.godaddyResponse?.price ? `$${Number((data?.godaddyResponse?.price / 100).toFixed(2))}` : "$0.00");
+        updateText('price-a', humbleData?.auction ? `$${humbleData?.auction}` : "$0.00");
+        updateText('price-b', humbleData?.brokerage ? `$${humbleData?.brokerage}` : "$0.00");
+        updateText('price-c', humbleData?.marketplace ? `$${humbleData.marketplace}` : "$0.00");
+        
+
+        // set estibot price
+         updateText('price-est-estimate', data?.estibotResponse?.estimatedValue ? `$${data?.estibotResponse?.estimatedValue}` : "$0.00");
+         updateText('price-est-wholesale', data?.estibotResponse?.wholesaleValue ? `$${data?.estibotResponse?.wholesaleValue}` : "$0.00");
+
+        // const priceEl = document.getElementById('domain-price');
+        // if (priceEl) {
+        //   priceEl.innerHTML = `${data?.godaddyResponse?.price || '--'} <span class="currency-label">${data?.godaddyResponse?.currency || ''}</span>`;
+        // }
+
+        const whois = data?.whoisResponse || {};
+        updateText('reg-date', whois?.registrationDate ? whois.registrationDate.split(' ')[0] : "--");
+        updateText('update-date', whois?.lastUpdated ? whois.lastUpdated.split(' ')[0] : "--");
+        updateText('whois-server', whois?.whoisServer || "--");
+
+        const days = whois?.estimatedAgeDays || 0;
+        updateText('age-days', `${days.toLocaleString()} Days`);
+        updateText('age-years', `${(days / 365).toFixed(1)} Years`);
+
+        // Name Servers
+        const nsContainer = document.getElementById('ns-container');
+        if (nsContainer) {
+          nsContainer.innerHTML = '';
+          if (whois?.nameServers?.hostNames) {
+            whois.nameServers.hostNames.forEach(ns => {
+              const span = document.createElement('span');
+              span.className = 'ns-tag';
+              span.textContent = ns;
+              nsContainer.appendChild(span);
+            });
+          } else {
+            nsContainer.innerHTML = '<span class="ns-tag">No Data</span>';
+          }
+        }
+
+        const card = document.getElementById('mainCard');
+        if (card) card.classList.add('loaded');
+
+      } catch (error) {
+        console.error("API Error:", error);
+        
+        const card = document.getElementById('mainCard');
+        if (card) card.classList.add('loaded');
+      }
+    }
+
+
+    getDomainMetaInforamtion();
+  });
+</script>
+
+
+
+<style>
+  .container-nfs {
+
+    width: 100%;
+    display: block !important;
+    padding: 0 !important;
+    position: relative;
+    margin-top: 1.4rem;
+  }
+
+  /* --- Card Styles --- */
+  .glass-card {
+    background: #001e3b;
+    border-radius: 24px;
+    box-shadow: 1px -1px 7px 10px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .glass-card.loaded {
+    opacity: 1;
+    position: relative;
+    z-index: 999;
+  }
+
+  /* --- Header Section --- */
+  .header-section {
+    padding: 16px 15px;
+    border-bottom: 1px solid #46484b;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  @media (min-width: 768px) {
+    .header-section {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .status-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* margin-bottom: 4px; */
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px !important;
+    font-weight: 700;
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .id-label {
+    font-size: 12px;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+  }
+
+  .domain-hero {
+    font-family: 'Poppins-Bold';
+    font-size: 30px !important;
+    color: #ff2daf;
+    margin: 0;
+
+  }
+
+  .price-container {
+    text-align: left;
+  }
+
+  @media (min-width: 768px) {
+    .price-container {
+      text-align: right;
+    }
+  }
+
+  .price-text {
+    font-size: 30px !important;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+
+  .currency-label {
+    font-size: 14px !important;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .purchase-btn {
+    margin-top: 8px;
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px !important;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+  }
+
+  .purchase-btn:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+  }
+
+  /* --- Metadata Grid --- */
+  .content-section {
+    padding: 15px 15px 20px;
+  }
+
+  .info-grid {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 32px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .data-label {
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .data-value {
+    font-size: 15px !important;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+
+  .data-subtext {
+    font-size: 10px !important;
+    color: #fff;
+    margin-top: 2px;
+  }
+
+  .age-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .age-value {
+    color: #ff2daf;
+  }
+
+  .age-pill {
+    padding: 2px 8px;
+    background: #eff6ff;
+    color: #ff2daf;
+    font-size: 10px !important;
+    font-weight: 700;
+    border-radius: 4px;
+  }
+
+  /* --- Name Servers --- */
+  .ns-box {
+    padding: 16px;
+    border-radius: 16px;
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  .ns-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .ns-tag {
+    padding: 4px 12px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 12px !important;
+    font-family: 'Poppins-Regular';
+    color: #475569;
+  }
+
+  /* --- Footer Section --- */
+  .valuation-footer {
+    padding: 24px 15px;
+    background-color: #0f172a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 999;
+  }
+
+  .potential-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .icon-box {
+    padding: 12px;
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-svg {
+    width: 24px;
+    height: 24px;
+    color: #60a5fa;
+  }
+
+  .potential-label {
+    font-size: 11px !important;
+    font-weight: 700;
+    text-transform: capitalize;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin: 0;
+  }
+
+  .potential-value {
+    font-size: 16px !important;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .estimate-container {
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .estimate-container {
+      text-align: right;
+    }
+  }
+
+  .estimate-label {
+    font-size: 11px !important;
+    font-weight: 500;
+    color: #fff;
+    text-transform: capitalize;
+    margin-bottom: 2px;
+  }
+
+  .estimate-value {
+    font-size: 20px !important;
+    font-weight: 500;
+    color: #ff2daf;
+    margin: 0;
+  }
+
+  .attribution-text {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 12px !important;
+    color: #fff;
+  }
+
+  .pricing-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+    border-bottom: 1px solid #383737;
+    margin-bottom: 1px;
+    padding-bottom: 8px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .pricing-preview:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+
+  }
+  .humble-container {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .humble-row {
+    
+    flex: 1;
+  }
+  .estimate-humble {
+    font-size: 13px !important;
+    font-weight: 500;
+    color: #fff;
+    text-transform: capitalize;
+    margin: 0;
+  } 
+  .text-pink {
+    color: #ff2daf !important;
+  }
+</style>
+
+{% schema %}
+{
+"name": "Domain Meta Info",
+"target": "section",
+"templates": ["product"],
+"settings": []
+}
+{% endschema %}

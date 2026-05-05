@@ -1,0 +1,583 @@
+<div class="domainSale__form">
+  <div class="topWrapper">
+    <div class="formHead">
+      <h2>Submit Your Domain</h2>
+      <p class="textCenter">Complete the form below to submit your domain for review. Our team will evaluate<br/> the information provided and guide you through the next steps of the listing process.</p>
+    </div>
+  </div>
+  <div class="container">
+    <form id="domainForm" novalidate>
+
+    <!-- PRIMARY DOMAIN INFO -->
+    <h3>PRIMARY DOMAIN INFORMATION</h3>
+    <hr>
+
+    <div class="input-group">
+      <label>Domain Name *</label>
+      <input type="text" name="domain" required placeholder="ExampleDomain.com" value="">
+    </div>
+
+    <div class="input-group ch_input">
+      <label>
+        <input type="checkbox" name="ownership" required>
+        I confirm I own or control this domain
+      </label>
+    </div>
+
+    <!-- LISTING TYPE -->
+    <h3>LISTING TYPE</h3>
+    <hr>
+
+    <div class="radio-group rb_input">
+      <label>
+        <input type="radio" name="listingType" value="fixed">
+        Marketplace Listing (Fixed Price)
+      </label>
+      <label>
+        <input type="radio" name="listingType" value="auction">
+        Auction Listing
+      </label>
+    </div>
+
+    <div class="row">
+      <div class="input-group">
+        <label>List Price *</label>
+        <input type="text" name="price" required placeholder="Eg $1500" value="">
+      </div>
+      <div class="input-group">
+        <label>Minimum Acceptable Offer</label>
+        <input type="text" name="minOffer" required placeholder="Eg $1200" value="">
+      </div>
+    </div>
+
+    <!-- ADDITIONAL INFO -->
+    <h3>ADDITIONAL INFORMATION</h3>
+    <hr>
+
+    <div class="input-group">
+      <label>Domain Registrar</label>
+      <input type="text" name="registrar" required placeholder="www.GoDaddy.com" value="">
+    </div>
+    <div class="row">
+      <div class="input-group">
+        <label>Expiry Date</label>
+        <input id="expiryDate" type="date" required name="expiry" value="">
+      </div>
+      <div class="input-group">
+        <label>Traffic / Revenue Information</label>
+        <input type="text" required name="traffic" value="">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Comments / Notes</label>
+      <textarea name="comments" required placeholder="Your Comment Here..." value=""></textarea>
+    </div>
+
+    <!-- CONTACT DETAILS -->
+    <h3 class="contactSaleForm">CONTACT DETAILS</h3>
+    <hr>
+
+    <div class="input-group">
+      <label>Full Name *</label>
+      <input type="text" name="fullName" required placeholder="Jane Smith" value="">
+    </div>
+
+    <div class="row">
+      <div class="input-group">
+        <label>Email Address *</label>
+        <input type="email" name="email" required placeholder="your@email.com"  value="">
+      </div>
+      <div class="input-group">
+        <label>Phone Number *</label>
+        <input type="tel" name="phone" required placeholder="08001234567" value="">
+      </div>
+    </div>
+
+    <button type="submit">Submit Your Domain</button>
+
+    <div class="response-msg" id="responseMsg"></div>
+
+    </form>
+  </div>
+</div>
+
+
+
+<script>
+  const form = document.getElementById("domainForm");
+  const responseMsg = document.getElementById("responseMsg");
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phonePattern = /^[0-9]{10,15}$/;
+  const pricePattern = /^[0-9]+(\.[0-9]{1,2})?$/;
+  const registrarPattern = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const trafficPattern = /^[a-zA-Z0-9\s$,.+-]*$/;
+
+  function showMessage(message, color = "#ff4d4d") {
+    responseMsg.style.color = color;
+    responseMsg.innerHTML = message;
+  }
+
+  function clearMessage() {
+    responseMsg.innerHTML = "";
+  }
+
+
+  // =========================
+  // FIELD VALIDATION
+  // =========================
+  function validateField(field) {
+
+    const name = field.name;
+    const value = field.value.trim();
+
+    // ✅ GENERIC REQUIRED CHECK (IMPORTANT)
+    if (field.hasAttribute("required") && !value && field.type !== "checkbox") {
+      return field.previousElementSibling
+        ? field.previousElementSibling.innerText + " is required."
+        : "This field is required.";
+    }
+
+    switch (name) {
+
+      case "domain":
+        break;
+
+      case "price":
+        if (!pricePattern.test(value.replace("$","")))
+          return "List price must be numeric only.";
+        break;
+
+      case "minOffer":
+        if (!pricePattern.test(value.replace("$","")))
+          return "Minimum offer must be numeric only.";
+        break;
+
+      case "registrar":
+        const clean = value.replace(/^https?:\/\//,'').replace(/^www\./,'');
+        if (!registrarPattern.test(clean))
+          return "Enter valid registrar domain (example: GoDaddy.com)";
+        break;
+
+      case "expiry":
+        if (isNaN(Date.parse(value)))
+          return "Invalid expiry date.";
+
+        const selected = new Date(value);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        if (selected < today)
+          return "Expiry date cannot be in the past.";
+        break;
+
+      case "traffic":
+        if (!trafficPattern.test(value))
+          return "Traffic / revenue contains invalid characters.";
+        break;
+
+      case "comments":
+        if (value.length < 5)
+          return "Comments must be at least 5 characters.";
+        break;
+
+      case "fullName":
+        break;
+
+      case "email":
+        if (!emailPattern.test(value))
+          return "Invalid email format.";
+        break;
+
+      case "phone":
+        if (!phonePattern.test(value))
+          return "Phone must be 10–15 digits only.";
+        break;
+    }
+
+    return "";
+  }
+
+
+  // =========================
+  // FORM VALIDATION
+  // =========================
+  function validateForm() {
+
+    const fields = form.querySelectorAll(
+      "input:not([type=radio]):not([type=checkbox]), textarea"
+    );
+
+    for (let field of fields) {
+      const error = validateField(field);
+      if (error) {
+        showMessage(error);
+        field.focus();
+        return false;
+      }
+    }
+
+    // checkbox LAST
+    if (!form.ownership.checked) {
+      showMessage("You must confirm domain ownership.");
+      form.ownership.focus();
+      return false;
+    }
+
+    return true;
+  }
+
+
+  // =========================
+  // SUBMIT
+  // =========================
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    showMessage("Submitting...", "#ffffff");
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    const shopDomain = '{{ shop.permanent_domain }}';
+
+    try {
+       const API_URL_2 = 'https://dude-conventions-taxation-edinburgh.trycloudflare.com';
+      //const API_URL = 'https://civilization-harbour-sodium-polished.trycloudflare.com';
+      
+      const response = await fetch(`${API_URL_2}/api/getDomainSale?shop=${shopDomain}`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        showMessage("Success! Domain submitted successfully.", "#00ff9d");
+        this.reset();
+      } else {
+        showMessage(result.message || "Something went wrong.");
+      }
+
+    } catch (error) {
+      showMessage("Server error. Please try again.");
+    }
+  });
+
+
+  // clear error when typing
+  form.querySelectorAll("input, textarea").forEach(field => {
+    field.addEventListener("input", clearMessage);
+  });
+</script>
+
+
+
+
+
+
+
+
+<style>
+  :root{
+    --bg:#0b2c4a;
+    --card:#062D53;
+    --input:#03213F;
+    --border:#1B4A77;
+    --accent:#FF2EAE;
+    --text:#ffffff;
+    --place:#ADC3D9;
+    --btnText:#022344;
+  }
+
+.domainSale__form{
+  padding-bottom: 120px;
+}
+  .domainSale__form .container{
+    width:100%;
+    /* max-width:750px; */
+    background:var(--card);
+    border:2px solid #1e6aa8;
+    border-radius:15px;
+    padding:40px;
+    margin: 0 auto;
+  }
+
+  .domainSale__form h3{
+    font-size:18px !important;
+    letter-spacing:2px;
+    color:var(--accent);
+    margin-bottom:15px;
+    margin-top:30px;
+    font-family: 'Poppins-Bold';
+  }
+  .domainSale__form .contactSaleForm{
+    margin-top: 60px !important;
+  }
+  .formHead .textCenter{
+    font-family: 'Poppins-Regular';
+    font-size: 14px !important;
+    color: white;
+  }
+  .formHead h2{
+    font-size: 40px !important; 
+    font-family: 'Poppins-SemiBold';
+  }
+
+  .domainSale__form hr{
+    border:0;
+    border-top:1px solid var(--border);
+    margin-bottom:20px;
+    margin-top: 0;
+  }
+
+  .domainSale__form .input-group{
+    margin-bottom:18px;
+  }
+
+  .domainSale__form label{
+    display:block;
+    font-size:14px;
+    margin-bottom:8px;
+    color: #fff;
+  }
+
+  .domainSale__form input, .domainSale__form textarea{
+    width:100%;
+    padding:12px 15px;
+    border-radius:25px;
+    border:1px solid var(--border);
+    background:var(--input);
+    color:#fff;
+    outline:none;
+    transition:0.3s;
+  }
+
+  .domainSale__form textarea{
+    border-radius:12px;
+    resize:none;
+    height:110px;
+  }
+
+  .domainSale__form input:focus, .domainSale__form textarea:focus{
+    border-color:var(--accent);
+  }
+
+  .domainSale__form .row{
+    display:flex;
+    gap:20px;
+  }
+
+  .domainSale__form .row .input-group{
+    flex:1;
+  }
+
+  .domainSale__form .radio-group{
+    display:flex;
+    gap:30px;
+    margin-bottom:20px;
+  }
+
+  .domainSale__form .radio-group label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+  }
+
+  .domainSale__form input[type="radio"],
+  .domainSale__form input[type="checkbox"]{
+    width:auto;
+    accent-color:var(--accent);
+  }
+
+  .domainSale__form button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:30px;
+    background:var(--accent);
+    color:var(--btnText);
+    font-weight:bold;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.3s;
+    margin-top:15px;
+  }
+
+  .domainSale__form button:hover{
+    opacity:0.9;
+  }
+
+  .domainSale__form .response-msg{
+    margin-top:15px;
+    font-size:14px;
+    text-align:center;
+  }
+
+  /* Remove default appearance */
+  .domainSale__form input[type="radio"],
+  .domainSale__form input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #0c3154;        /* dark background */
+    border: 2px solid #184e7a;   /* fixed border */
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    transition: 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  /* Prevent size/border jump */
+  .domainSale__form input[type="radio"]:checked,
+  .domainSale__form input[type="checkbox"]:checked {
+    border: 2px solid #ff2e9a; /* same border width (no shake) */
+  }
+
+  /* RADIO STYLE */
+  .domainSale__form input[type="radio"] {
+    border-radius: 50%;
+  }
+
+  .domainSale__form input[type="radio"]::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #ff2e9a;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 0.2s ease;
+  }
+
+  .domainSale__form input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+
+  /* CHECKBOX STYLE */
+  .domainSale__form input[type="checkbox"] {
+    border-radius: 4px;
+  }
+
+  .domainSale__form input[type="checkbox"]::before {
+    content: "✓";
+    position: absolute;
+    color: #ff2e9a;
+    font-size: 13px;
+    font-weight: bold;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 0.2s ease;
+  }
+
+  .domainSale__form input[type="checkbox"]:checked::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .domainSale__form .ch_input label{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .domainSale__form .ch_input input{
+    padding: 0px;
+    margin-right: 5px;
+  }
+
+  .domainSale__form .rb_input input{
+    padding: 0px;
+  }
+
+  .domainSale__form input:-webkit-autofill,
+  .domainSale__form input:-webkit-autofill:hover,
+  .domainSale__form input:-webkit-autofill:focus,
+  .domainSale__form input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: var(--text) !important;
+  }
+
+  /* Remove focus shake/glow */
+  .domainSale__form input[type="radio"]:focus,
+  .domainSale__form input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .domainSale__form ::placeholder {
+    color: var(--place); 
+    opacity: 1; 
+  }
+
+  .domainSale__form .formHead{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center
+  }
+  .formHead h2{
+    margin: 0;
+  }
+
+  .domainSale__form .textCenter{
+    text-align: center;
+  }
+  .domainSale__form .topWrapper{
+    width:100%;
+    margin-bottom:30px;
+  }
+
+  .domainSale__form input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
+  @media(max-width:768px){
+    .row{
+      flex-direction:column;
+    }
+    .container{
+      padding:25px;
+    }
+  }
+  @media(max-width:767px){   
+    .domainSale__form .formHead h2{
+      font-size: 28px !important; 
+    }
+    .domainSale__form .formHead p br{
+      display:none;
+    }
+    .domainSale__form .container{
+      padding: 20px;
+    }
+    .domainSale__form .radio-group{
+      gap: 15px;
+    }
+    .domainSale__form {
+      padding-bottom: 60px;
+    } 
+    .domainSale__form .contactSaleForm {
+      margin-top: 40px !important;
+    }
+    .domainSale__form .row{
+      gap: 0px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+"name": "Domain Sale Form",
+"target": "section",
+"templates": ["page"],
+"settings": []
+}
+{% endschema %}
