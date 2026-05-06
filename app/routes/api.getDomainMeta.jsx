@@ -34,7 +34,6 @@ export const loader = async ({ request }) => {
     const cachedUser = await client.get(`${productId}`);
 
     if (cachedUser) {
-      console.log("From cache");
       return new Response(
         JSON.stringify({
           status: 200,
@@ -103,6 +102,7 @@ export const loader = async ({ request }) => {
       retailRange: raw?.price_range_retail,
       ageDays: raw?.whois_age,
       registrar: raw?.whois_registrar,
+      whois: raw?.whois,
     };
 
     const responseData = {

@@ -9,7 +9,7 @@
         <span class="status-badge" id="avail-status">Checking...</span>
         <span class="id-label">WHOIS DATA</span>
       </div>
-      <h1 class="domain-hero" id="domain-title">loading...</h1>
+      <h1 class="domain-hero" id="domain-title">Loading...</h1>
 
       
     </div>
@@ -126,7 +126,7 @@
     async function getDomainMetaInforamtion() {
       try {
         let API_URL = 'https://ai-online-rho.vercel.app';
-        // let API_URL = 'https://path-rolled-applicants-discusses.trycloudflare.com';
+        // let API_URL = 'https://lion-psychology-nuts-upgrade.trycloudflare.com';
         
         // Use product title as domain if it looks like one, otherwise fallback
        let domain = extractDomain(productTitle);
@@ -145,6 +145,7 @@
         };
 
         let humbleData = data?.humbleworthResponse?.valuations?.length ? data.humbleworthResponse.valuations[0] : null; 
+        let whoisEstidata = data?.estibotResponse?.whois;
 
       
         updateText('domain-title', domain);
@@ -166,11 +167,11 @@
         // }
 
         const whois = data?.whoisResponse || {};
-        updateText('reg-date', whois?.registrationDate ? whois.registrationDate.split(' ')[0] : "--");
-        updateText('update-date', whois?.lastUpdated ? whois.lastUpdated.split(' ')[0] : "--");
+        updateText('reg-date', whois?.registrationDate ? whois.registrationDate.split(' ')[0] : (whoisEstidata?.whois_create_date || "--"));
+        updateText('update-date', whois?.lastUpdated ? whois.lastUpdated.split(' ')[0] : (whoisEstidata?.whois_update_date || "--"));
         updateText('whois-server', whois?.whoisServer || "--");
 
-        const days = whois?.estimatedAgeDays || 0;
+        const days = whois?.estimatedAgeDays || whoisEstidata?.whois_age || 0;
         updateText('age-days', `${days.toLocaleString()} Days`);
         updateText('age-years', `${(days / 365).toFixed(1)} Years`);
 
@@ -210,19 +211,20 @@
 
 <style>
   .container-nfs {
-
     width: 100%;
     display: block;
     padding: 0;
     position: relative;
     margin-top: 1.4rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* --- Card Styles --- */
   .glass-card {
-    background: #001e3b;
-    border-radius: 24px;
-    box-shadow: 1px -1px 7px 10px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(28deg, rgba(66, 32, 79, 1) 0%, rgba(1, 3, 31, 1) 21%);
+    border-radius: 16px;
     overflow: hidden;
   }
 
@@ -230,12 +232,13 @@
     opacity: 1;
     position: relative;
     z-index: 999;
+    font-family: 'Inter Regular';
   }
 
   /* --- Header Section --- */
   .header-section {
     padding: 16px 15px;
-    border-bottom: 1px solid #46484b;
+    border-bottom: 1px solid #ffffff2e;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -264,12 +267,12 @@
     border-radius: 9999px;
     font-size: 12px;
     font-weight: 700;
-    background: #dcfce7;
-    color: #166534;
+    background: linear-gradient(88.54deg, #4F46E5, #7A3EFF, #4F46E5);
+    color: #fff;
   }
 
   .id-label {
-    font-size: 12px;
+    font-size: 14px;
     color: #fff;
     font-weight: 500;
     letter-spacing: 0.025em;
@@ -278,7 +281,7 @@
   .domain-hero {
     font-family: 'Inter Regular';
     font-size: 30px;
-    color: #ff2daf;
+    color: #ffffff;
     margin: 0;
 
   }
@@ -327,7 +330,7 @@
 
   /* --- Metadata Grid --- */
   .content-section {
-    padding: 15px 15px 20px;
+    padding: 15px 24px 20px;
   }
 
   .info-grid {
@@ -338,7 +341,7 @@
   }
 
   .data-label {
-    font-size: 11px;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: #fff;
@@ -349,7 +352,7 @@
   .data-value {
     font-size: 15px;
     font-weight: 600;
-    color: #fff;
+    color: #CBD5F5;
     margin: 0;
   }
 
@@ -365,14 +368,10 @@
     gap: 8px;
   }
 
-  .age-value {
-    color: #ff2daf;
-  }
-
   .age-pill {
     padding: 2px 8px;
-    background: #eff6ff;
-    color: #ff2daf;
+    background: linear-gradient(88.54deg, #4F46E5, #7A3EFF, #4F46E5);
+    color: #fff;
     font-size: 10px;
     font-weight: 700;
     border-radius: 4px;
@@ -395,18 +394,17 @@
 
   .ns-tag {
     padding: 4px 12px;
-    background: white;
-    border: 1px solid #e2e8f0;
+    background: #7A3EFF;
     border-radius: 8px;
     font-size: 12px;
     font-family: 'Inter Regular';
-    color: #475569;
+    color: #fff;
   }
 
   /* --- Footer Section --- */
   .valuation-footer {
-    padding: 24px 15px;
-    background-color: #0f172a;
+    border-top: 1px solid #46484b;
+    padding: 24px 0;
     color: white;
     display: flex;
     flex-direction: column;
@@ -472,7 +470,7 @@
   .estimate-value {
     font-size: 20px;
     font-weight: 500;
-    color: #ff2daf;
+    color: #ffffff;
     margin: 0;
   }
 
@@ -488,11 +486,11 @@
     align-items: center;
     gap: 8px;
     justify-content: space-between;
-    border-bottom: 1px solid #383737;
+    border-bottom: 1px solid #ffffff2e;
     margin-bottom: 1px;
     padding-bottom: 8px;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
   .pricing-preview:last-child {
@@ -508,18 +506,19 @@
     margin-top: 1rem;
   }
   .humble-row {
-    
     flex: 1;
   }
   .estimate-humble {
-    font-size: 13px;
-    font-weight: 500;
-    color: #fff;
+    font-size: 15px;
+    font-family: 'Inter Medium';
+    color: #e5e5e5;
     text-transform: capitalize;
     margin: 0;
+    
   } 
   .text-pink {
-    color: #ff2daf;
+    color: #CBD5F5;
+    font-family: 'Inter SemiBold';
   }
 </style>
 
