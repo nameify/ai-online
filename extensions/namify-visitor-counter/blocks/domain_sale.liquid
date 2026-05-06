@@ -132,7 +132,7 @@
     const name = field.name;
     const value = field.value.trim();
 
-    // ✅ GENERIC REQUIRED CHECK (IMPORTANT)
+    // ✅ GENERIC REQUIRED CHECK)
     if (field.hasAttribute("required") && !value && field.type !== "checkbox") {
       return field.previousElementSibling
         ? field.previousElementSibling.innerText + " is required."
@@ -306,21 +306,21 @@
   }
 
   .domainSale__form h3{
-    font-size:18px !important;
+    font-size:18px;
     letter-spacing:2px;
     color:var(--accent);
     margin-bottom:15px;
   }
   .domainSale__form .contactSaleForm{
-    margin-top: 60px !important;
+    margin-top: 60px;
   }
   .formHead .textCenter{
     
-    font-size: 14px !important;
+    font-size: 14px;
     color: white;
   }
   .formHead h2{
-    font-size: 40px !important; 
+    font-size: 40px; 
    
   }
 
@@ -360,7 +360,7 @@
   .domainSale__form textarea{
     resize:none;
     height: 165px;
-    border-radius: 20px !important;
+    border-radius: 20px;
     font-family: 'Inter Regular';
   }
 
@@ -494,7 +494,7 @@
   .domainSale__form input:-webkit-autofill:focus,
   .domainSale__form input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
-    -webkit-text-fill-color: var(--text) !important;
+    -webkit-text-fill-color: var(--text);
   }
 
   /* Remove focus shake/glow */
@@ -543,7 +543,7 @@
   }
   @media(max-width:767px){   
     .domainSale__form .formHead h2{
-      font-size: 28px !important; 
+      font-size: 28px; 
     }
     .domainSale__form .formHead p br{
       display:none;
@@ -558,7 +558,7 @@
       padding-bottom: 60px;
     } 
     .domainSale__form .contactSaleForm {
-      margin-top: 40px !important;
+      margin-top: 40px;
     }
     .domainSale__form .row{
       gap: 0px;
