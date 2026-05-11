@@ -39,7 +39,6 @@ export function adminTemplate(data, shop) {
 
                 <table width="100%" style="background:#f9fafb; padding:18px; border-radius:10px;">
                   <tr><td><strong>Domain:</strong> ${data.domain}</td></tr>
-                  <tr><td><strong>Listing Type:</strong> ${data.listingType}</td></tr>
                   <tr><td><strong>Price:</strong> ${data.price}</td></tr>
                   <tr><td><strong>Min Offer:</strong> ${data.minOffer}</td></tr>
                   <tr><td><strong>Registrar:</strong> ${data.registrar}</td></tr>

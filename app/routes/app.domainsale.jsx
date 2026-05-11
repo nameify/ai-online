@@ -78,7 +78,7 @@ export default function Index() {
           <s-table-header-row>
             <s-table-header>S.NO</s-table-header>
             <s-table-header listSlot="primary">Domain Name</s-table-header>
-            <s-table-header>Listing Type</s-table-header>
+            
             <s-table-header>List Price</s-table-header>
             <s-table-header>Min Price</s-table-header>
             <s-table-header>Domain Reg</s-table-header>
@@ -96,7 +96,7 @@ export default function Index() {
               <s-table-row key={item.id}>
                 <s-table-cell>{index + 1}</s-table-cell>
                 <s-table-cell>{item.domain}</s-table-cell>
-                <s-table-cell>{item.listingType}</s-table-cell>
+            
                 <s-table-cell>{item.price}</s-table-cell>
                 <s-table-cell>{item.minOffer}</s-table-cell>
                 <s-table-cell>{item.registrar}</s-table-cell>

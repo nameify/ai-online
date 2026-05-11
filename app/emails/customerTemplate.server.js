@@ -41,7 +41,6 @@ export function customerTemplate(data) {
                   <tr>
                     <td style="font-size:14px; line-height:1.8;">
                       <strong>Domain:</strong> ${data.domain}<br/>
-                      <strong>Listing Type:</strong> ${data.listingType}<br/>
                       <strong>Price:</strong> ${data.price}<br/>
                       <strong>Minimum Offer:</strong> ${data.minOffer}
                     </td>
